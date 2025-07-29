@@ -1,7 +1,7 @@
 from characters.base_character import BaseCharacter
 from characters.equipments.base_equipments import DamageEffect, DamageType, EquipSlot, PercentModifier, Stat, Weapon
-from enemy.boss_manager import BossManager
-from enemy.floor_boss import FloorBoss
+from enemy.bosses.boss_manager import BossManager
+from enemy.bosses.floor_boss import FloorBoss
 
 import random
 from typing import Dict, List, Optional, Any
@@ -93,7 +93,7 @@ class GameEngine:
     def start_game(self):
         """开始游戏"""
         print("=" * 50)
-        print("欢迎来到神秘城堡!")
+        print("🏰 欢迎来到神秘城堡! 🏰")
         print("=" * 50)
         
         self.create_character()
@@ -101,14 +101,17 @@ class GameEngine:
     
     def create_character(self):
         """角色创建"""
-        print("\n--- 角色创建 ---")
+        print("\n🎭 --- 角色创建 --- 🎭")
         name = input("请输入角色名字: ").strip()
         if not name:
             name = "冒险者"
         
-        print("\n选择职业:")
+        print("\n⚔️ 选择职业:")
         for i, char_class in enumerate(CharacterClass, 1):
-            print(f"{i}. {char_class.value}")
+            emoji = "⚔️" if char_class == CharacterClass.WARRIOR else \
+                   "🔮" if char_class == CharacterClass.MAGE else \
+                   "🗡️" if char_class == CharacterClass.ROGUE else "✨"
+            print(f"{i}. {emoji} {char_class.value}")
         
         while True:
             try:
@@ -117,12 +120,12 @@ class GameEngine:
                     selected_class = list(CharacterClass)[choice - 1]
                     break
                 else:
-                    print("请输入1-4之间的数字!")
+                    print("❗ 请输入1-4之间的数字!")
             except ValueError:
-                print("请输入有效数字!")
+                print("❗ 请输入有效数字!")
         
         self.player = PlayerCharacter(name, selected_class)
-        print(f"\n角色创建成功! {name} - {selected_class.value}")
+        print(f"\n🎉 角色创建成功! {name} - {selected_class.value}")
         self.show_character_status()
     
     def main_game_loop(self):
@@ -149,28 +152,29 @@ class GameEngine:
                 print("无效选择，请重新输入!")
         
         if not self.player.is_alive():
-            print("\n游戏结束！你的冒险到此为止...")
+            print("\n💀 游戏结束！你的冒险到此为止...")
+            print("🌟 感谢你的精彩冒险！")
     
     def show_current_location(self):
         """显示当前位置"""
         floor = self.player.current_floor
         boss = self.castle.get_boss(floor)
-        boss_status = "已击败" if floor in self.player.defeated_bosses else "未挑战"
+        boss_status = "✅ 已击败" if floor in self.player.defeated_bosses else "❌ 未挑战"
         
         print(f"\n" + "=" * 30)
-        print(f"当前位置: 城堡第{floor}层")
-        print(f"层主: {boss.name} ({boss_status})")
+        print(f"📍 当前位置: 城堡第{floor}层")
+        print(f"👹 层主: {boss.name} ({boss_status})")
         print("=" * 30)
     
     def show_menu(self):
         """显示菜单"""
-        print("\n可选操作:")
-        print("1. 移动到其他层")
-        print("2. 挑战层主")
-        print("3. 查看角色状态")
-        print("4. 查看城堡状态")
-        print("5. 休息恢复")
-        print("0. 退出游戏")
+        print("\n🎯 可选操作:")
+        print("1. 🚶 移动到其他层")
+        print("2. ⚔️ 挑战层主")
+        print("3. 📊 查看角色状态")
+        print("4. 🏰 查看城堡状态")
+        print("5. 🛌 休息恢复")
+        print("0. 🚪 退出游戏")
     
     def move_floors(self):
         """移动到其他层"""
@@ -183,67 +187,67 @@ class GameEngine:
             available_floors.append(current + 1)
         
         if not available_floors:
-            print("没有可移动的层数!")
+            print("❌ 没有可移动的层数!")
             return
         
-        print(f"\n可移动到的层数: {available_floors}")
+        print(f"\n🗺️ 可移动到的层数: {available_floors}")
         
         try:
             target = int(input("请选择目标层数: "))
             if target in available_floors:
                 self.player.current_floor = target
-                print(f"成功移动到第{target}层!")
+                print(f"✅ 成功移动到第{target}层! 🎉")
                 
                 # 移动后立即遇到层主
                 boss = self.castle.get_boss(target)
                 if target not in self.player.defeated_bosses:
-                    print(f"\n你遇到了层主: {boss.name}!")
-                    print("准备战斗!")
+                    print(f"\n⚠️ 你遇到了层主: {boss.name}!")
+                    print("⚔️ 准备战斗!")
             else:
-                print("无法移动到该层!")
+                print("❌ 无法移动到该层!")
         except ValueError:
-            print("请输入有效数字!")
+            print("❗ 请输入有效数字!")
     
     def challenge_boss(self):
         """挑战层主"""
         floor = self.player.current_floor
         
         if floor in self.player.defeated_bosses:
-            print("该层层主已被击败!")
+            print("⚠️ 该层层主已被击败!")
             return
         
         boss = self.castle.get_boss(floor)
-        print(f"\n开始挑战层主: {boss.name}!")
+        print(f"\n⚔️ 开始挑战层主: {boss.name}!")
         
         self.battle(boss)
     
     def battle(self, boss: FloorBoss):
         """战斗系统 - 集成新Boss技能系统"""
         print(f"\n{'='*40}")
-        print(f"战斗开始: {self.player.name} VS {boss.name}")
+        print(f"⚔️ 战斗开始: {self.player.name} VS {boss.name} ⚔️")
         print('=' * 40)
 
         turn = 1
         while self.player.is_alive() and boss.is_alive():
-            print(f"\n--- 第{turn}回合 ---")
-            print(f"玩家: HP {self.player.hp}/{self.player.max_hp}, MP {self.player.mp}/{self.player.max_mp}")
-            print(f"{boss.name}: HP {boss.hp}/{boss.max_hp}, MP {boss.mp}/{boss.max_mp}")
+            print(f"\n🔄 --- 第{turn}回合 --- 🔄")
+            print(f"🧑‍🎤 玩家: ❤️ {self.player.hp}/{self.player.max_hp}, 🔮 {self.player.mp}/{self.player.max_mp}")
+            print(f"👹 {boss.name}: ❤️ {boss.hp}/{boss.max_hp}, 🔮 {boss.mp}/{boss.max_mp}")
             
             # 显示Boss技能状态
             if boss.skills:
-                print(f"Boss攻击模式: {boss.attack_pattern.name}")
+                print(f"🎯 Boss攻击模式: {boss.attack_pattern.name}")
                 usable_skills = [s for s in boss.skills if s.can_use(boss)]
                 if usable_skills:
-                    print(f"Boss可用技能: {len(usable_skills)}个")
+                    print(f"⚡ Boss可用技能: {len(usable_skills)}个")
 
             # ---------- 玩家回合 ----------
             # 1. 列出可用行动
-            print("\n你的回合:")
-            print("1. 普通攻击")
-            print("2. 防御 (减少50%伤害)")
+            print("\n🎮 你的回合:")
+            print("1. 🗡️ 普通攻击")
+            print("2. 🛡️ 防御 (减少50%伤害)")
             usable_skills = [s for s in self.player.skills if s.can_use(self.player)]
             for idx, sk in enumerate(usable_skills, start=3):
-                print(f"{idx}. {sk.name} (MP:{sk.mp_cost})" +(f" CD:{sk.current_cooldown}" if sk.current_cooldown else ""))
+                print(f"{idx}. ✨ {sk.name} (🔮:{sk.mp_cost})" +(f" ⏰:{sk.current_cooldown}" if sk.current_cooldown else ""))
 
             # 2. 读取玩家选择
             while True:
@@ -253,19 +257,19 @@ class GameEngine:
                         break
                 except ValueError:
                     pass
-                print("无效输入，请重选！")
+                print("❗ 无效输入，请重选！")
 
             # 3. 执行玩家行动
             damage_reduction = 1.0     # 默认不防御
             if action == 1:
                 dmg = max(1, self.player.attack - boss.defense)
                 boss.take_damage(dmg, DamageType.PHYSICAL)
-                print(f"你对{boss.name}造成了{dmg}点伤害！")
+                print(f"💥 你对{boss.name}造成了{dmg}点伤害！")
                 # 触发装备效果（普通攻击）
                 self._trigger_equipment_effects(self.player, boss)
             elif action == 2:
                 damage_reduction = 0.5
-                print("你进入了防御姿态！")
+                print("🛡️ 你进入了防御姿态！")
             else:  # 使用技能
                 skill = usable_skills[action - 3]
                 result = self.player.use_skill(skill.name, target=boss)
@@ -279,7 +283,7 @@ class GameEngine:
                 break
 
             # ---------- Boss 回合 ----------
-            print(f"\n{boss.name}的回合:")
+            print(f"\n👹 {boss.name}的回合:")
             
             # Boss选择并执行动作
             action = boss.select_action(self.player)
@@ -288,81 +292,86 @@ class GameEngine:
             print(result['message'])
             if 'damage' in result:
                 damage = int(result['damage'] * damage_reduction)
-                print(f"{boss.name}造成了{damage}点伤害！")
+                print(f"💥 {boss.name}造成了{damage}点伤害！")
             if 'heal_amount' in result:
-                print(f"{boss.name}恢复了{result['heal_amount']}点生命值！")
+                print(f"💚 {boss.name}恢复了{result['heal_amount']}点生命值！")
             if result.get('burn_applied'):
-                print("你被灼烧了！")
+                print("🔥 你被灼烧了！")
             if result.get('poison_applied'):
-                print("你中毒了！")
+                print("☠️ 你中毒了！")
             if result.get('stun_applied'):
-                print("你被眩晕了，下回合无法行动！")
+                print("💫 你被眩晕了，下回合无法行动！")
 
             turn += 1
 
         # ---------- 战斗结果 ----------
         print("\n" + "=" * 40)
         if self.player.is_alive():
-            print("胜利！")
+            print("🎉 胜利！")
             self.player.defeated_bosses.add(self.player.current_floor)
 
             exp_reward = boss.level * 50
             self.player.gain_experience(exp_reward)
-            print(f"获得{exp_reward}点经验值！")
+            print(f"✨ 获得{exp_reward}点经验值！")
 
             if len(self.player.defeated_bosses) == self.castle.floors:
                 print("\n" + "=" * 50)
-                print("恭喜！你已经征服了整个城堡！")
+                print("🏆 恭喜！你已经征服了整个城堡！")
                 print("=" * 50)
                 self.game_running = False
         else:
-            print("败北...")
+            print("💀 败北...")
         print("=" * 40)
     
     def show_character_status(self):
         """显示角色状态"""
         status = self.player.get_status()
-        print(f"\n--- {self.player.name} ({self.player.character_class.value}) ---")
+        print(f"\n🎭 --- {self.player.name} ({self.player.character_class.value}) ---")
         for key, value in status.items():
             if key != "name":
-                print(f"{key}: {value}")
-        print(f"当前层数: {self.player.current_floor}")
-        print(f"已击败层主: {len(self.player.defeated_bosses)}/{self.castle.floors}")
+                emoji = "❤️" if "hp" in key.lower() else \
+                       "🔮" if "mp" in key.lower() else \
+                       "⚔️" if "attack" in key.lower() else \
+                       "🛡️" if "defense" in key.lower() else \
+                       "✨" if "spell" in key.lower() else "📊"
+                print(f"{emoji} {key}: {value}")
+        print(f"📍 当前层数: {self.player.current_floor}")
+        print(f"🏆 已击败层主: {len(self.player.defeated_bosses)}/{self.castle.floors}")
         
         # 显示装备信息
-        print("\n--- 装备信息 ---")
+        print("\n🛡️ --- 装备信息 ---")
         for slot, equipment in self.player.equipment.items():
             if equipment:
-                print(f"{slot.value}: {equipment.name}")
+                print(f"📦 {slot.value}: {equipment.name}")
             else:
-                print(f"{slot.value}: 无")
+                print(f"📦 {slot.value}: 无")
         
         # 显示背包物品
-        print("\n--- 背包物品 ---")
+        print("\n🎒 --- 背包物品 ---")
         inventory_items = self.player.inventory.list_items()
         if inventory_items:
             for item in inventory_items:
-                print(f"- {item['name']} x{item['quantity']}")
+                print(f"📍 {item['name']} x{item['quantity']}")
         else:
-            print("背包为空")
+            print("🎒 背包为空")
     
     def show_castle_status(self):
         """显示城堡状态"""
-        print(f"\n--- 城堡状态 ---")
+        print(f"\n🏰 --- 城堡状态 ---")
         for floor in range(1, self.castle.floors + 1):
             boss = self.castle.get_boss(floor)
-            status = "✓ 已击败" if floor in self.player.defeated_bosses else "✗ 未击败"
-            current = " <-- 当前位置" if floor == self.player.current_floor else ""
-            print(f"第{floor}层: {boss.name} (等级{boss.level}) {status}{current}")
+            status = "✅ 已击败" if floor in self.player.defeated_bosses else "❌ 未击败"
+            current = " 📍 当前位置" if floor == self.player.current_floor else ""
+            print(f"🏰 第{floor}层: 👹 {boss.name} (等级{boss.level}) {status}{current}")
             
             # 显示Boss技能信息
             if boss.skills:
-                print(f"    技能: {len(boss.skills)}个 | 攻击模式: {boss.attack_pattern.name}")
+                print(f"    ⚔️ 技能: {len(boss.skills)}个 | 🎯 攻击模式: {boss.attack_pattern.name}")
     
     def rest(self):
         """休息恢复"""
         if self.player.hp == self.player.max_hp and self.player.mp == self.player.max_mp:
-            print("你的状态已经很好了!")
+            print("😊 你的状态已经很好了!")
             return
         
         heal_amount = self.player.max_hp // 4
@@ -371,7 +380,7 @@ class GameEngine:
         self.player.heal(heal_amount)
         self.player.restore_mp(mp_amount)
         
-        print(f"休息后恢复了{heal_amount}点生命值和{mp_amount}点法力值!")
+        print(f"💤 休息后恢复了❤️ {heal_amount}点生命值和🔮 {mp_amount}点法力值!")
     
     def _trigger_equipment_effects(self, attacker, target):
         """触发装备效果（在攻击后调用）"""
@@ -390,7 +399,7 @@ class GameEngine:
                             extra_damage = int(scale_value * effect.coefficient)
                             if extra_damage > 0:
                                 target.take_damage(extra_damage, effect.dmg_type)
-                                print(f"[{equipment.name}] 追加 {extra_damage} {effect.dmg_type.value} 伤害!")
+                                print(f"[{equipment.name}] 追加 {extra_damage} {effect.dmg_type.name} 伤害!")
                         
                         # 处理ManaSurgeEffect
                         elif effect_class_name == 'ManaSurgeEffect':
@@ -413,7 +422,7 @@ class GameEngine:
 
     def quit_game(self):
         """退出游戏"""
-        print("感谢游玩!")
+        print("👋 感谢游玩! 期待你的下次冒险!")
         self.game_running = False
 
 def main():

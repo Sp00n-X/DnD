@@ -235,6 +235,10 @@ class BaseCharacter(ABC):
 
     def update_status_effects(self):
         """更新状态效果（每回合调用）"""
+        # 重置行动能力（状态效果会重新设置这些）
+        self.can_act = True
+        self.can_cast = True
+        
         # 更新所有状态效果
         results = self.status_manager.update_all()
         
@@ -244,10 +248,6 @@ class BaseCharacter(ABC):
         # 更新技能冷却
         for skill in self.skills:
             skill.reduce_cooldown()
-        
-        # 重置行动能力（状态效果会重新设置这些）
-        self.can_act = True
-        self.can_cast = True
         
         return results
 

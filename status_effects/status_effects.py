@@ -26,7 +26,7 @@ class BurnEffect(BaseStatusEffect):
     
     def on_tick(self, character) -> Dict[str, Any]:
         """每回合造成伤害"""
-        from ..equipments.base_equipments import DamageType
+        from characters.equipments.base_equipments import DamageType
         damage = self.damage_per_turn * self.stacks
         character.take_damage(damage, DamageType.MAGICAL)
         
@@ -60,7 +60,7 @@ class PoisonEffect(BaseStatusEffect):
     
     def on_tick(self, character) -> Dict[str, Any]:
         """每回合造成最大生命值的百分比伤害"""
-        from ..equipments.base_equipments import DamageType
+        from characters.equipments.base_equipments import DamageType
         damage = int(character.max_hp * self.percent_per_turn * self.stacks)
         character.take_damage(damage, DamageType.MAGICAL)
         
@@ -97,6 +97,19 @@ class FreezeEffect(BaseStatusEffect):
         return {
             "success": True,
             "message": f"{character.name} 被冰冻了，无法行动"
+        }
+    
+    def on_tick(self, character) -> Dict[str, Any]:
+        """每回合持续冰冻效果"""
+        character.can_act = False
+        
+        self.remaining_duration -= 1
+        if self.remaining_duration <= 0:
+            self.is_active = False
+            
+        return {
+            "success": True,
+            "message": f"{character.name} 仍处于冰冻状态"
         }
     
     def on_remove(self, character) -> Dict[str, Any]:
@@ -244,6 +257,21 @@ class StunEffect(BaseStatusEffect):
         return {
             "success": True,
             "message": f"{character.name} 被眩晕了，无法行动或施法"
+        }
+    
+    def on_tick(self, character) -> Dict[str, Any]:
+        """每回合持续眩晕效果"""
+        # 确保眩晕期间持续生效
+        character.can_act = False
+        character.can_cast = False
+        
+        self.remaining_duration -= 1
+        if self.remaining_duration <= 0:
+            self.is_active = False
+            
+        return {
+            "success": True,
+            "message": f"{character.name} 仍处于眩晕状态"
         }
     
     def on_remove(self, character) -> Dict[str, Any]:

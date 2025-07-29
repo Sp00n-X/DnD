@@ -1,7 +1,7 @@
 from typing import Dict, Optional, List, Tuple
 from .floor_boss import FloorBoss
 from .attack_patterns import RandomSkillPattern, PrioritySkillPattern, EnragedPattern
-from .boss_skills import GOBLIN_CHEF_SKILLS
+from .boss_skills import get_boss_skills
 
 class BossManager:
     """Boss管理器 - 负责创建和管理所有层主"""
@@ -26,7 +26,7 @@ class BossManager:
             # 为特定Boss添加技能和攻击模式
             if floor == 1:
                 # 哥布林厨师长 - 随机技能模式
-                boss.add_skills(GOBLIN_CHEF_SKILLS)
+                boss.add_skills(get_boss_skills("goblin_chef"))
                 boss.set_attack_pattern(RandomSkillPattern())
             
             self.bosses[floor] = boss

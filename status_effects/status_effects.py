@@ -282,3 +282,58 @@ class StunEffect(BaseStatusEffect):
             "success": True,
             "message": f"{character.name} 从眩晕中恢复"
         }
+
+
+# 新增的状态效果类
+class SpeedDebuffEffect(BaseStatusEffect):
+    """速度减益效果"""
+    
+    def __init__(self, duration: int = 2, speed_reduction: int = 30):
+        data = StatusEffectData(
+            name="减速",
+            duration=duration,
+            max_stacks=3,
+            refresh_on_reapply=True
+        )
+        super().__init__(data)
+        self.speed_reduction = speed_reduction
+    
+    def get_status_type(self) -> StatusType:
+        return StatusType.DEBUFF
+    
+    def get_priority(self) -> StatusPriority:
+        return StatusPriority.MEDIUM
+    
+    def on_apply(self, character) -> Dict[str, Any]:
+        """应用减速效果"""
+        return {
+            "success": True,
+            "message": f"{character.name} 的速度降低了 {self.speed_reduction * self.stacks}%"
+        }
+
+
+class DodgeBuffEffect(BaseStatusEffect):
+    """闪避增益效果"""
+    
+    def __init__(self, duration: int = 2, dodge_chance: int = 30):
+        data = StatusEffectData(
+            name="闪避提升",
+            duration=duration,
+            max_stacks=3,
+            refresh_on_reapply=True
+        )
+        super().__init__(data)
+        self.dodge_chance = dodge_chance
+    
+    def get_status_type(self) -> StatusType:
+        return StatusType.BUFF
+    
+    def get_priority(self) -> StatusPriority:
+        return StatusPriority.MEDIUM
+    
+    def on_apply(self, character) -> Dict[str, Any]:
+        """应用闪避提升效果"""
+        return {
+            "success": True,
+            "message": f"{character.name} 的闪避率提升了 {self.dodge_chance * self.stacks}%"
+        }

@@ -14,5 +14,8 @@ __all__ = [
     'FreezeEffect',
     'DefenseBuffEffect',
     'AttackBuffEffect',
-    'HealOverTimeEffect'
+    'HealOverTimeEffect',
+    'StunEffect',
+    'SpeedDebuffEffect',
+    'DodgeBuffEffect'
 ]

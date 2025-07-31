@@ -1,0 +1,91 @@
+{
+  "name": "spoon",
+  "level": 1,
+  "experience": 0,
+  "hp": 100,
+  "mp": 120,
+  "base_hp": 100,
+  "base_attack": 8,
+  "base_defense": 5,
+  "base_mp": 80,
+  "base_spell_power": 13,
+  "last_saved": "2025-07-31 11:39:36",
+  "play_time": 0,
+  "character_class": "法师",
+  "current_floor": 1,
+  "defeated_bosses": [],
+  "total_bosses": 10,
+  "inventory": [],
+  "equipment": {
+    "1": {
+      "name": "火焰之王法杖",
+      "slot": 1,
+      "percent_mods": [
+        {
+          "stat": 5,
+          "percent": 0.5
+        },
+        {
+          "stat": 4,
+          "percent": 0.2
+        }
+      ]
+    },
+    "2": null,
+    "3": {
+      "name": "奥术长袍",
+      "slot": 3,
+      "percent_mods": [
+        {
+          "stat": 3,
+          "percent": 0.25
+        },
+        {
+          "stat": 4,
+          "percent": 0.3
+        },
+        {
+          "stat": 5,
+          "percent": 0.15
+        }
+      ]
+    },
+    "4": null,
+    "5": null
+  },
+  "skills": [
+    {
+      "name": "火球术",
+      "skill_type": "active",
+      "mp_cost": 10,
+      "cooldown": 0,
+      "current_cooldown": 0,
+      "level_requirement": 1
+    },
+    {
+      "name": "冰冻术",
+      "skill_type": "active",
+      "mp_cost": 15,
+      "cooldown": 1,
+      "current_cooldown": 0,
+      "level_requirement": 1
+    },
+    {
+      "name": "防御强化",
+      "skill_type": "active",
+      "mp_cost": 10,
+      "cooldown": 2,
+      "current_cooldown": 0,
+      "level_requirement": 1
+    },
+    {
+      "name": "法术回复",
+      "skill_type": "active",
+      "mp_cost": 0,
+      "cooldown": 3,
+      "current_cooldown": 0,
+      "level_requirement": 1
+    }
+  ],
+  "status_effects": []
+}

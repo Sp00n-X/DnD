@@ -1,6 +1,8 @@
 from enemy.base_enemy import BaseEnemy, EnemyType
-from characters.skills.base_skill import Skill
 from typing import List
+
+# 沼泽生物列表
+ENEMIES = []
 
 class MirrorHeron(BaseEnemy):
     """镜沼鹭 - 幽沼带生物"""
@@ -122,3 +124,10 @@ class StillwaterViper(BaseEnemy):
         # 特殊能力：隐形
         self.has_invisibility = True
         self.invisibility_duration = 2
+
+# 注册所有敌人
+ENEMIES = [
+    MirrorHeron,
+    StarAlgaeLotus,
+    StillwaterViper
+]

@@ -49,6 +49,10 @@ class BattleEngine:
         else:
             print(f"\n💫 {self.context.enemy.name}被眩晕，无法行动！")
             self.context.enemy_stunned = False
+        
+        # 回合结束时更新状态（包括技能冷却）
+        self.context.player.update_status_effects()
+        self.context.enemy.update_status_effects()
     
     def _process_player_turn(self):
         """处理玩家回合"""

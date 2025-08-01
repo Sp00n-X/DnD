@@ -129,6 +129,7 @@ class SaveSystem:
                 'total_bosses': 10
             })
         
+        
         return save_data
     
     def _deserialize_character(self, save_data: Dict[str, Any]) -> Optional[BaseCharacter]:
